@@ -8,7 +8,6 @@ fn main() {
     loop {
         println!("{}", riddle);
         
-        print!("> ");
         io::stdout().flush().unwrap();
         
         let mut user_answer = String::new();
