@@ -6,7 +6,7 @@ pub fn diff(a: i16, b: i16) -> i16 {
     a - b
 }
 
-pub fn pro(a: i8, b: i8) -> i16 {
+pub fn pro(a: i8, b: i8) -> i8 {
     a * b
 }
 
