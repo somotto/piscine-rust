@@ -11,9 +11,9 @@ pub fn pro(a: i8, b: i8) -> i8 {
 }
 
 pub fn quo(a: f64, b: f64) -> f64 {
-        a / b
+    a / b
 }
 
 pub fn rem(a: f64, b: f64) -> f64 {
-        a % b
+    a % b
 }
