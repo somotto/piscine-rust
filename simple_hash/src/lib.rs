@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-pub fn word_frequency_counter(words: &Vec<&str>) -> HashMap<&str, usize> {
-    let mut frequency: HashMap<&str, usize> = HashMap::new();
+pub fn word_frequency_counter<'a>(words: &Vec<&'a str>) -> HashMap<&'a str, usize> {
+    let mut frequency: HashMap<&'a str, usize> = HashMap::new();
     
     for word in words {
         *frequency.entry(word).or_insert(0) += 1;
