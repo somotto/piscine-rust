@@ -1,7 +1,7 @@
 extern crate rand;
 use rand::Rng;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Suit {
     Heart,
     Diamond,
@@ -30,7 +30,7 @@ impl Suit {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Rank {
     Ace,
     Number(u8),
@@ -62,7 +62,7 @@ impl Rank {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Card {
     pub suit: Suit,
     pub rank: Rank,
