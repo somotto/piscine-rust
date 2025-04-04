@@ -1,4 +1,4 @@
-use rand::Rng;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Debug, PartialEq)]
 pub enum Suit {
@@ -19,8 +19,8 @@ pub enum Rank {
 
 impl Suit {
     pub fn random() -> Suit {
-        let random_value = rand::thread_rng().gen_range(1..=4);
-        Suit::translate(random_value)
+        let random_value = (simple_random() % 4) + 1;
+        Suit::translate(random_value as u8)
     }
 
     pub fn translate(value: u8) -> Suit {
@@ -36,8 +36,8 @@ impl Suit {
 
 impl Rank {
     pub fn random() -> Rank {
-        let random_value = rand::thread_rng().gen_range(1..=13);
-        Rank::translate(random_value)
+        let random_value = (simple_random() % 13) + 1;
+        Rank::translate(random_value as u8)
     }
 
     pub fn translate(value: u8) -> Rank {
@@ -60,4 +60,11 @@ pub struct Card {
 
 pub fn winner_card(card: &Card) -> bool {
     card.suit == Suit::Spade && card.rank == Rank::Ace
+}
+
+fn simple_random() -> u64 {
+    match SystemTime::now().duration_since(UNIX_EPOCH) {
+        Ok(duration) => duration.as_millis() as u64,
+        Err(_) => 42, 
+    }
 }
