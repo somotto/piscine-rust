@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub enum Suit {
     Heart,
     Diamond,
@@ -8,7 +8,7 @@ pub enum Suit {
     Club,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub enum Rank {
     Ace,
     Number(u8),
@@ -52,7 +52,7 @@ impl Rank {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone)]
 pub struct Card {
     pub suit: Suit,
     pub rank: Rank,
@@ -62,9 +62,10 @@ pub fn winner_card(card: Card) -> bool {
     card.suit == Suit::Spade && card.rank == Rank::Ace
 }
 
+// Simple random number generator using system time
 fn simple_random() -> u64 {
     match SystemTime::now().duration_since(UNIX_EPOCH) {
         Ok(duration) => duration.as_millis() as u64,
-        Err(_) => 42, 
+        Err(_) => 42, // Fallback value
     }
 }
