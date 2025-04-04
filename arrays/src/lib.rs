@@ -1,14 +1,11 @@
-use arrays::*;
+pub fn sum(a: &[i32]) -> i32 {
+    let mut total = 0;
+    for i in a {
+        total += i;
+    }
+    total
+}
 
-fn main() {
-    let a = (1..=10).collect::<Vec<i32>>();
-    let b = [5; 10];
-
-    println!("The sum of the elements in {:?} is {}", a, sum(&a));
-    println!("The sum of the elements in {:?} is {}", b, sum(&b));
-    println!(
-        "Array of {} elements filled with 10 = {:?}",
-        thirtytwo_tens().len(),
-        thirtytwo_tens()
-    );
+pub fn thirtytwo_tens() -> [i32; 32] {
+    [10; 32]
 }
