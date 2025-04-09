@@ -9,11 +9,9 @@ pub struct FormError {
 
 impl FormError {
     pub fn new(field_name: &'static str, field_value: String, err: &'static str) -> Self {
-        let current_time = Local::now().format("%Y-%m-%d %H:%M:%S").to_string();
-        
         FormError {
             form_values: (field_name, field_value),
-            date: current_time,
+            date: Local::now().format("%Y-%m-%d %H:%M:%S").to_string(),
             err,
         }
     }
