@@ -1,75 +1,95 @@
-pub use crate::mall::*;
-pub use crate::mall::floor::Floor;
-pub use crate::mall::floor::store::Store;
-pub use crate::mall::floor::store::employee::Employee;
-pub use crate::mall::guard::Guard;
+pub mod mall;
 
+pub use mall::floor::Floor;
+pub use mall::floor::store::Store;
+pub use mall::floor::store::employee::Employee;
+pub use mall:💂:Guard;
+pub use mall::Mall;
 
-pub fn biggest_store(mall: Mall) -> Store {
-    mall.floors
-        .iter()
-        .flat_map(|floor| floor.stores.clone())
-        .max_by_key(|store| store.square_meters)
-        .unwrap()
+pub use mall::floor;
+pub use mall::floor::store;
+
+pub fn biggest_store(mall: Mall) -> mall::floor::store::Store {
+    let mut biggest = None;
+    let mut max_size = 0;
+
+    for floor in mall.floors.iter() {
+        for store in floor.stores.iter() {
+            if store.square_meters > max_size {
+                max_size = store.square_meters;
+                biggest = Some(store);
+            }
+        }
+    }
+
+    biggest.unwrap().clone()
 }
 
 pub fn highest_paid_employee(mall: Mall) -> Vec<Employee> {
-    let all_employees: Vec<Employee> = mall.floors
-        .iter()
-        .flat_map(|floor| floor.stores.iter())
-        .flat_map(|store| store.employees.clone())
-        .collect();
+    let mut highest_paid = Vec::new();
+    let mut max_salary = 0.0;
 
-    let max_salary = all_employees
-        .iter()
-        .map(|e| e.salary)
-        .fold(0.0, f64::max);
+    for floor in mall.floors.iter() {
+        for store in floor.stores.iter() {
+            for employee in store.employees.iter() {
+                if employee.salary > max_salary {
+                    max_salary = employee.salary;
+                    highest_paid.clear();
+                    highest_paid.push(employee.clone());
+                } else if employee.salary == max_salary {
+                    highest_paid.push(employee.clone());
+                }
+            }
+        }
+    }
 
-    all_employees
-        .into_iter()
-        .filter(|e| (e.salary - max_salary).abs() < f64::EPSILON)
-        .collect()
+    highest_paid
 }
 
 pub fn nbr_of_employees(mall: Mall) -> usize {
-    let store_employees: usize = mall.floors
-        .iter()
-        .flat_map(|floor| floor.stores.iter())
-        .map(|store| store.employees.len())
-        .sum();
+    let mut count = mall.guards.len();
 
-    store_employees + mall.guards.len()
+    for floor in mall.floors.iter() {
+        for store in floor.stores.iter() {
+            count += store.employees.len();
+        }
+    }
+
+    count
 }
 
-pub fn check_for_securities(mall: &mut Mall, mut new_guards: Vec<Guard>) {
-    let total_space: u64 = mall.floors
-        .iter()
-        .flat_map(|floor| floor.stores.iter())
-        .map(|store| store.square_meters)
-        .sum();
+pub fn check_for_securities(mall: &mut Mall, guards: Vec<Guard>) {
+    let mut total_floor_size = 0;
 
-    let required_guards = (total_space + 199) / 200; 
+    for floor in mall.floors.iter() {
+        total_floor_size += floor.size_limit;
+    }
 
-    let current_guard_count = mall.guards.len();
-    let needed = required_guards as isize - current_guard_count as isize;
+    let required_guards = (total_floor_size as f64 / 200.0).ceil() as usize;
+    let current_guards = mall.guards.len();
 
-    if needed > 0 {
-        let to_add = needed.min(new_guards.len() as isize) as usize;
-        mall.guards.extend(new_guards.drain(..to_add));
+    if current_guards < required_guards {
+        let guards_to_add = required_guards - current_guards;
+        for i in 0..guards_to_add {
+            if i < guards.len() {
+                mall.hire_guard(guards[i].clone());
+            }
+        }
     }
 }
 
 pub fn cut_or_raise(mall: &mut Mall) {
-    for floor in &mut mall.floors {
-        for store in &mut floor.stores {
-            for employee in &mut store.employees {
-                let (start, end) = employee.working_hours;
-                let hours = end.saturating_sub(start) as f64;
+    for floor in mall.floors.iter_mut() {
+        for store in floor.stores.iter_mut() {
+            for employee in store.employees.iter_mut() {
+                let working_hours = employee.working_hours.1 - employee.working_hours.0;
 
-                if hours > 10.0 {
-                    employee.salary *= 1.10;
+                if working_hours > 10 {
+                    let raise_amount = employee.salary * 0.1;
+                    employee.raise(raise_amount);
                 } else {
-                    employee.salary *= 0.90;
+                    let cut_amount = employee.salary * 0.1;
+                    employee.cut(cut_amount);
                 }
             }
         }
