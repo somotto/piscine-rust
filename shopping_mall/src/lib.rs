@@ -1,8 +1,9 @@
-use shopping_mall::mall::*;
-use shopping_mall::mall::floor::Floor;
-use shopping_mall::mall::floor::store::Store;
-use shopping_mall::mall::floor::store::employee::Employee;
-use shopping_mall::mall::guard::Guard;
+pub use crate::mall::*;
+pub use crate::mall::floor::Floor;
+pub use crate::mall::floor::store::Store;
+pub use crate::mall::floor::store::employee::Employee;
+pub use crate::mall::guard::Guard;
+
 
 pub fn biggest_store(mall: Mall) -> Store {
     mall.floors
