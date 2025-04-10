@@ -21,6 +21,7 @@ fn edit_distance(a: &str, b: &str) -> usize {
     dp[m][n]
 }
 
+
 fn expected_variable(input: &str, expected: &str) -> Option<String> {
     if !input.is_snake_case() && !input.is_camel_case() {
         return None;
