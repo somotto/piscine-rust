@@ -3,7 +3,7 @@ pub mod mall;
 pub use mall::floor::Floor;
 pub use mall::floor::store::Store;
 pub use mall::floor::store::employee::Employee;
-pub use mall:💂:Guard;
+pub use mall::Guard;
 pub use mall::Mall;
 
 pub use mall::floor;
