@@ -1,4 +1,4 @@
-fn biggest_store(mall: mall::Mall) -> mall::floor::store::Store {
+pub fn biggest_store(mall: Mall) -> floor::store::Store {
     let mut biggest = None;
     
     for floor in mall.floors.iter() {
@@ -17,7 +17,7 @@ fn biggest_store(mall: mall::Mall) -> mall::floor::store::Store {
     biggest.unwrap().clone()
 }
 
-fn highest_paid_employee(mall: mall::Mall) -> Vec<mall::floor::store::employee::Employee> {
+pub fn highest_paid_employee(mall: Mall) -> Vec<floor::store::employee::Employee> {
     let mut highest_salary = 0.0;
     let mut highest_paid = Vec::new();
     
@@ -38,7 +38,7 @@ fn highest_paid_employee(mall: mall::Mall) -> Vec<mall::floor::store::employee::
     highest_paid
 }
 
-fn nbr_of_employees(mall: mall::Mall) -> usize {
+pub fn nbr_of_employees(mall: Mall) -> usize {
     let mut count = mall.guards.len();
     
     for floor in mall.floors.iter() {
@@ -50,7 +50,7 @@ fn nbr_of_employees(mall: mall::Mall) -> usize {
     count
 }
 
-fn check_for_securities(mall: &mut mall::Mall, available_guards: Vec<mall::guard::Guard>) {
+pub fn check_for_securities(mall: &mut Mall, available_guards: Vec<guard::Guard>) {
     let mut total_square_meters = 0;
     for floor in mall.floors.iter() {
         for store in floor.stores.iter() {
@@ -72,7 +72,7 @@ fn check_for_securities(mall: &mut mall::Mall, available_guards: Vec<mall::guard
     }
 }
 
-fn cut_or_raise(mall: &mut mall::Mall) {
+pub fn cut_or_raise(mall: &mut Mall) {
     for floor in &mut mall.floors {
         for store in &mut floor.stores {
             for employee in &mut store.employees {
