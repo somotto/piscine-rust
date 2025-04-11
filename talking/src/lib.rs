@@ -1,5 +1,5 @@
 pub fn talking(text: &str) -> &str {
-    if text.is_empty() {
+    if text.trim().is_empty() {
         return "Just say something!";
     }
 
