@@ -7,13 +7,13 @@ pub fn pig_latin(text: &str) -> String {
         return format!("{}ay", text);
     }
 
-    for i in 0..chars.len() {
-        if chars[i] == 'q' && i + 1 < chars.len() && chars[i + 1] == 'u' {
-            return format!("{}ay", chars[i + 2..].iter().collect::<String>() + &text[0..i + 2]);
-        }
+    if chars.starts_with(&['q', 'u']) {
+        return format!("{}ay", text[2..].to_string() + &text[0..2]);
+    }
 
+    for i in 0..chars.len() {
         if vowels.contains(&chars[i]) {
-            return format!("{}ay", chars[i..].iter().collect::<String>() + &text[0..i]);
+            return format!("{}ay", text[i..].to_string() + &text[0..i]);
         }
     }
 
