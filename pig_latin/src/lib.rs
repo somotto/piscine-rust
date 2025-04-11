@@ -1,24 +1,21 @@
-pub fn pig_latin(word: &str) -> String {
-    let vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
-    let chars: Vec<char> = word.chars().collect();
+pub fn pig_latin(text: &str) -> String {
+    let vowels = ['a', 'e', 'i', 'o', 'u'];
+    let text = text.to_lowercase(); 
+    let chars: Vec<char> = text.chars().collect();
 
-    match chars.first() {
-        Some(c) if vowels.contains(c) => format!("{}ay", word),
-        
-        Some('q') if chars.get(1) == Some(&'u') => {
-            let start = chars[2..].iter().collect::<String>();  
-            let end = chars[..2].iter().collect::<String>();  
-            format!("{}{}ay", start, end)
-        },
-        
-        _ => {
-            if let Some(i) = chars.iter().position(|&c| vowels.contains(&c)) {
-                let start = chars[i..].iter().collect::<String>();  
-                let end = chars[..i].iter().collect::<String>();  
-                format!("{}{}ay", start, end)
-            } else {
-                String::new()  
-            }
+    if vowels.contains(&chars[0]) {
+        return format!("{}ay", text);
+    }
+
+    for i in 0..chars.len() {
+        if chars[i] == 'q' && i + 1 < chars.len() && chars[i + 1] == 'u' {
+            return format!("{}ay", chars[i + 2..].iter().collect::<String>() + &text[0..i + 2]);
+        }
+
+        if vowels.contains(&chars[i]) {
+            return format!("{}ay", chars[i..].iter().collect::<String>() + &text[0..i]);
         }
     }
+
+    format!("{}ay", text)
 }
