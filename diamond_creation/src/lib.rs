@@ -9,10 +9,11 @@ pub fn get_diamond(c: char) -> Vec<String> {
         let letter = (b'A' + i as u8) as char;
         let spaces = n - i;
         
-        match i {
-            0 => diamond.push(format!("{:width$}", letter)),  // First row: just 'A'
-            _ => diamond.push(format!("{:width$}{}{:width$}", letter, " ".repeat(2 * i - 1), letter, width = spaces)),  // Other rows: two letters with spaces
-        }
+        let row = match i {
+            0 => format!("{:width$}", letter),  
+            _ => format!("{:width$}{}{:width$}", letter, " ".repeat(2 * i - 1), letter, width = spaces),
+        };
+        diamond.push(row);
     }
 
     for i in (0..n).rev() {
