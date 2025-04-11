@@ -1,7 +1,7 @@
-fn scytale_cipher(message: String, i: u32) -> String {
+pub fn scytale_cipher(message: String, i: u32) -> String {
     let size = i as usize;
     let message_len = message.len();
-    
+
     let rows = (message_len + size - 1) / size; 
 
     let mut grid: Vec<Vec<char>> = vec![vec![' '; size]; rows];
