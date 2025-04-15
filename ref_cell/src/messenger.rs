@@ -1,4 +1,3 @@
-use std::cell::RefCell;
 use std::rc::Rc;
 
 pub trait Logger {
@@ -20,15 +19,15 @@ impl<'a> Tracker<'a> {
         }
     }
 
-    pub fn peek(&self, value: &Rc<RefCell<usize>>) {
-        let current_value = *value.borrow();
+    pub fn peek(&self, value: &Rc<usize>) {
+        let current_value = **value;
         let percentage = (current_value as f64 / self.max as f64) * 100.0;
         
         self.logger.info(&format!("you are using up to {}% of your quota", percentage as usize));
     }
 
-    pub fn set_value(&self, value: &Rc<RefCell<usize>>) {
-        let current_value = *value.borrow();
+    pub fn set_value(&self, value: &Rc<usize>) {
+        let current_value = **value;
         let percentage = (current_value as f64 / self.max as f64) * 100.0;
         
         if percentage >= 100.0 {
