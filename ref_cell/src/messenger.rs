@@ -8,7 +8,6 @@ pub trait Logger {
 
 pub struct Tracker<'a> {
     logger: &'a dyn Logger,
-    value: usize,
     max: usize,
 }
 
@@ -16,12 +15,11 @@ impl<'a> Tracker<'a> {
     pub fn new(logger: &'a dyn Logger, max: usize) -> Self {
         Tracker {
             logger,
-            value: 0,
             max,
         }
     }
 
-    pub fn set_value(&self, val: &Rc<i32>) {
+    pub fn set_value(&self, val: &Rc<usize>) {
         let count = Rc::strong_count(val);
         let percentage = (count * 100) / self.max;
 
@@ -32,7 +30,7 @@ impl<'a> Tracker<'a> {
         }
     }
 
-    pub fn peek(&self, val: &Rc<i32>) {
+    pub fn peek(&self, val: &Rc<usize>) {
         let count = Rc::strong_count(val);
         let percentage = (count * 100) / self.max;
         
