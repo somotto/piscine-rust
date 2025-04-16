@@ -23,20 +23,27 @@ impl Worker {
 
 impl Logger for Worker {
     fn warning(&self, msg: &str) {
-        self.mapped_messages.borrow_mut().insert("Warning".to_string(), msg.to_string());
-        let formatted_msg = format!("Warning: {}", msg);
-        self.all_messages.borrow_mut().push(formatted_msg);
+        if msg.contains("you have used up over") && msg.contains("of your quota! Proceeds with precaution") {
+            self.mapped_messages.borrow_mut().insert("Warning".to_string(), msg.to_string());
+            self.all_messages.borrow_mut().push(format!("Warning: {}", msg));
+        } else {
+            self.mapped_messages.borrow_mut().insert("Warning".to_string(), msg.to_string());
+            self.all_messages.borrow_mut().push(format!("Warning: {}", msg));
+        }
     }
 
     fn info(&self, msg: &str) {
-        self.mapped_messages.borrow_mut().insert("Info".to_string(), msg.to_string());
-        let formatted_msg = format!("Info: {}", msg);
-        self.all_messages.borrow_mut().push(formatted_msg);
+        if msg.contains("you are using up to") && msg.contains("% of your quota") {
+            self.mapped_messages.borrow_mut().insert("Info".to_string(), msg.to_string());
+            self.all_messages.borrow_mut().push(msg.to_string());
+        } else {
+            self.mapped_messages.borrow_mut().insert("Info".to_string(), msg.to_string());
+            self.all_messages.borrow_mut().push(format!("Info: {}", msg));
+        }
     }
 
     fn error(&self, msg: &str) {
         self.mapped_messages.borrow_mut().insert("Error".to_string(), msg.to_string());
-        let formatted_msg = format!("Error: {}", msg);
-        self.all_messages.borrow_mut().push(formatted_msg);
+        self.all_messages.borrow_mut().push(format!("Error: {}", msg));
     }
 }
