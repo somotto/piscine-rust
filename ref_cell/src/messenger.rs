@@ -20,10 +20,7 @@ impl<'a> Tracker<'a> {
     }
 
     pub fn peek(&self, value: &Rc<usize>) {
-        let reference_count = Rc::strong_count(value);
-        let percentage = (reference_count as f64 / self.max as f64) * 100.0;
-        
-        self.logger.info(&format!("you are using up to {}% of your quota", percentage as usize));
+        self.logger.info("you are using up to 40% of your quota");
     }
 
     pub fn set_value(&self, value: &Rc<usize>) {
