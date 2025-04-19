@@ -25,7 +25,7 @@ impl<T> List<T> {
             return;
         }
 
-        let mut current = &self.head.take().unwrap();
+        let current = self.head.take().unwrap();
         let new_node = Node {
             value: new_node.value,
             next: Some(Box::new(current)),
@@ -39,7 +39,7 @@ impl<T> List<T> {
             return;
         }
 
-        let mut current = self.head.take().unwrap();
+        let current = self.head.take().unwrap();
 
         if let Some(next_node) = current.next {
             self.head = Some(*next_node);
