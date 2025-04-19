@@ -44,10 +44,7 @@ impl<T> List<T> {
 
         while let Some(node) = current {
             count += 1;
-            current = match &node.next {
-                Some(boxed_node) => &Some(**boxed_node),
-                None => &None,
-            };
+            current = &node.next;
         }
 
         count
