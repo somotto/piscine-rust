@@ -19,9 +19,9 @@ pub struct Meat {
 }
 
 impl Player {
-	pub fn eat(&mut self, food: T) {
-		self.strength += food.gives();
-	}
+    pub fn eat<T: Food>(&mut self, food: T) {
+        self.strength += food.gives();
+    }
 }
 
 //Implement Display trait for Player
