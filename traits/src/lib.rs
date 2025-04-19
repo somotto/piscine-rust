@@ -24,7 +24,7 @@ impl Player {
 	}
 }
 
-/ Implement Display trait for Player
+//Implement Display trait for Player
 impl fmt::Display for Player {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "{}", self.name)?;
