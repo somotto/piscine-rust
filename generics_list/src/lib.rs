@@ -1,6 +1,6 @@
 #[derive(Clone, Debug)]
 pub struct List<T> {
-    pub head: Option<Box<Node<T>>>,
+    pub head: Option<Node<T>>,
 }
 
 #[derive(Clone, Debug)]
@@ -15,28 +15,56 @@ impl<T> List<T> {
     }
 
     pub fn push(&mut self, value: T) {
-        let new_node = Box::new(Node {
+        let new_node = Node {
             value,
-            next: self.head.take(),
-        });
+            next: None,
+        };
+
+        if self.head.is_none() {
+            self.head = Some(new_node);
+            return;
+        }
+
+        let mut current = &self.head.take().unwrap();
+        let new_node = Node {
+            value: new_node.value,
+            next: Some(Box::new(current)),
+        };
+
         self.head = Some(new_node);
     }
 
     pub fn pop(&mut self) {
-        if let Some(node) = self.head.take() {
-            self.head = node.next;
+        if self.head.is_none() {
+            return;
+        }
+
+        let mut current = self.head.take().unwrap();
+
+        if let Some(next_node) = current.next {
+            self.head = Some(*next_node);
         }
     }
 
     pub fn len(&self) -> usize {
-        let mut count = 0;
-        let mut current = &self.head;
-
-        while let Some(node) = current {
-            count += 1;
-            current = &node.next;
+        fn count_nodes<T>(node: &Option<Node<T>>) -> usize {
+            match node {
+                None => 0,
+                Some(n) => {
+                    let mut count = 1;
+                    let mut current = &n.next;
+                    
+                    // Count nodes in the chain
+                    while let Some(boxed_node) = current {
+                        count += 1;
+                        current = &boxed_node.next;
+                    }
+                    
+                    count
+                }
+            }
         }
-
-        count
+        
+        count_nodes(&self.head)
     }
 }
