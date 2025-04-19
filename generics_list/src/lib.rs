@@ -32,7 +32,7 @@ impl<T> List<T> {
         let mut count = 0;
         let mut current = &self.head;
 
-        while let Some(ref node) = current {
+        while let Some(node) = current {
             count += 1;
             current = &node.next;
         }
