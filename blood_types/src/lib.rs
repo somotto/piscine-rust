@@ -128,3 +128,18 @@ impl BloodType {
 			.collect()
 	}
 }
+fn all_blood_types() -> Vec<BloodType> {
+	use Antigen::*;
+	use RhFactor::*;
+	let mut types = vec![];
+
+	for antigen in [O, A, B, AB] {
+		for rh in [Negative, Positive] {
+			types.push(BloodType {
+				antigen: antigen.clone(),
+				rh_factor: rh.clone(),
+			});
+		}
+	}
+	types
+}
