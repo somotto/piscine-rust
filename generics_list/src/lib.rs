@@ -21,7 +21,7 @@ impl<T> List<T> {
         };
 
         if let Some(current_head) = self.head.take() {
-            let mut new_head = Node {
+            let new_head = Node {
                 value: new_node.value,
                 next: Some(Box::new(current_head)),
             };
@@ -44,7 +44,10 @@ impl<T> List<T> {
 
         while let Some(node) = current {
             count += 1;
-            current = &node.next.as_ref().map(|boxed_node| &**boxed_node);
+            current = match &node.next {
+                Some(boxed_node) => &Some(**boxed_node),
+                None => &None,
+            };
         }
 
         count
