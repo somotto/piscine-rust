@@ -1,6 +1,8 @@
 pub struct Matrix<T>(pub Vec<Vec<T>>);
 
 trait Scalar<Item = Self> {
+    type Item;
+    
     fn zero() -> Self;
     fn one() -> Self;
 }
