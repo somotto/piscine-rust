@@ -3,6 +3,27 @@ use std::ops::{Add, Sub};
 #[derive(Debug, Clone)]
 pub struct Matrix<T>(pub Vec<Vec<T>>);
 
+impl<T: PartialEq> PartialEq for Matrix<T> {
+    fn eq(&self, other: &Self) -> bool {
+        if self.0.len() != other.0.len() {
+            return false;
+        }
+
+        for i in 0..self.0.len() {
+            if self.0[i].len() != other.0[i].len() {
+                return false;
+            }
+            for j in 0..self.0[i].len() {
+                if self.0[i][j] != other.0[i][j] {
+                    return false;
+                }
+            }
+        }
+
+        true
+    }
+}
+
 impl<T> Add for Matrix<T>
 where
     T: Add<Output = T> + Clone,
