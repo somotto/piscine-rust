@@ -2,7 +2,6 @@ use std::ops::Mul;
 use std::fmt::Debug;
 use std::clone::Clone;
 
-// We need the Matrix type to be generic but with constraints for arithmetic operations
 #[derive(Debug, Clone)]
 pub struct Matrix<T>(pub Vec<Vec<T>>);
 
@@ -42,6 +41,13 @@ impl<T: Clone> Matrix<T> {
     }
 }
 
+// Implementing equality comparison for Matrix
+impl<T: PartialEq> PartialEq for Matrix<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+
 // Implementing matrix multiplication
 impl<T> Mul for Matrix<T> 
 where 
@@ -50,8 +56,6 @@ where
     type Output = Option<Matrix<T>>;
 
     fn mul(self, rhs: Self) -> Self::Output {
-        // Matrix multiplication is defined only when the number of columns in the first matrix
-        // equals the number of rows in the second matrix
         if self.number_of_cols() != rhs.number_of_rows() {
             return None;
         }
