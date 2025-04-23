@@ -1,5 +1,8 @@
 use std::ops::{Add, Sub};
 
+#[derive(Debug, Clone)]
+pub struct Matrix<T>(pub Vec<Vec<T>>);
+
 impl<T> Add for Matrix<T>
 where
     T: Add<Output = T> + Clone,
