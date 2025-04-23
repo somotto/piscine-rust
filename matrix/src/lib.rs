@@ -1,10 +1,47 @@
+#[derive(Debug)]
 pub struct Matrix<T>(pub Vec<Vec<T>>);
 
-trait Scalar<Item = Self> {
+pub trait Scalar<Item = Self> {
     type Item;
     
     fn zero() -> Self;
     fn one() -> Self;
+}
+
+impl Scalar for u32 {
+    type Item = u32;
+
+    fn zero() -> Self {
+        0
+    }
+
+    fn one() -> Self {
+        1
+    }
+}
+
+impl Scalar for i32 {
+    type Item = i32;
+
+    fn zero() -> Self {
+        0
+    }
+
+    fn one() -> Self {
+        1
+    }
+}
+
+impl Scalar for f64 {
+    type Item = f64;
+
+    fn zero() -> Self {
+        0.0
+    }
+
+    fn one() -> Self {
+        1.0
+    }
 }
 
 impl<T: Scalar<Item = T>> Matrix<T> {
@@ -41,5 +78,11 @@ impl<T: Scalar<Item = T>> Matrix<T> {
             result.push(row_vec);
         }
         Matrix(result)
+    }
+}
+
+impl<T: PartialEq> PartialEq for Matrix<T> {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
     }
 }
