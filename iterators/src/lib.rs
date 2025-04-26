@@ -30,9 +30,20 @@ impl Collatz {
 }
 
 pub fn collatz(n: u64) -> usize {
-    if n == 0 {
-        0
-    } else {
-        Collatz::new(n).take_while(|c| c.v != 1).count()
+    if n == 0{
+        return 0;
     }
+
+    let mut counter = 0;
+    let mut collatz_strt = Collatz::new(n);
+    while collatz_strt.v != 1 {
+        counter += 1;
+        if collatz_strt.v % 2 == 0{
+            collatz_strt.v = collatz_strt.v / 2;
+        }else {
+            collatz_strt.v = collatz_strt.v * 3 + 1;
+        }
+    }
+
+    return counter;
 }
