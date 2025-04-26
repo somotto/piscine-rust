@@ -33,17 +33,12 @@ impl Cart {
         let mut prices: Vec<f32> = self.items.iter().map(|(_, p)| *p).collect();
         let mut discounted = Vec::new();
     
-        // Sort to ensure consistent grouping of triplets
-        prices.sort_by(|a, b| a.partial_cmp(b).unwrap());
-    
         let mut i = 0;
         while i + 2 < prices.len() {
             let group = vec![prices[i], prices[i + 1], prices[i + 2]];
             let min_price = group.iter().cloned().reduce(f32::min).unwrap();
-    
             let total: f32 = group.iter().sum();
             let new_total = total - min_price;
-    
             let factor = new_total / total;
     
             for &p in &group {
@@ -54,13 +49,12 @@ impl Cart {
             i += 3;
         }
     
-        // Handle remaining items
+        // Remaining items (not part of a full group of 3)
         for j in i..prices.len() {
             discounted.push((prices[j] * 100.0).round() / 100.0);
         }
     
-        discounted.sort_by(|a, b| a.partial_cmp(b).unwrap());
         self.receipt = discounted.clone();
         discounted
-    }    
+    }       
 }
