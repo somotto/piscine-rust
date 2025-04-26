@@ -7,6 +7,5 @@ pub fn slices_to_map<T, U>(keys: &[T], values: &[U]) -> HashMap<&T, &U> {
     for i in 0..size {
         map.insert(&keys[i], &values[i]);
     }
-
     map
 }
