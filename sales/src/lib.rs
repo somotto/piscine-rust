@@ -1,4 +1,15 @@
 #[derive(Debug, Clone, PartialEq)]
+pub struct Store {
+    pub products: Vec<(String, f32)>,
+}
+
+impl Store {
+    pub fn new(products: Vec<(String, f32)>) -> Store {
+        Store { products }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct Cart {
     pub items: Vec<(String, f32)>,
     pub receipt: Vec<f32>,
@@ -12,43 +23,47 @@ impl Cart {
         }
     }
 
-    pub fn insert_item(&mut self, store: &Store, ele: String) {
-        if let Some((_, price)) = store.products.iter().find(|(name, _)| *name == ele) {
-            self.items.push((ele, *price));
+    pub fn insert_item(&mut self, s: &Store, ele: String) {
+        // Find the product in the store
+        if let Some(product) = s.products.iter().find(|(name, _)| *name == ele) {
+            // Add the product to the cart
+            self.items.push((product.0.clone(), product.1));
         }
     }
 
     pub fn generate_receipt(&mut self) -> Vec<f32> {
-        let mut discounted_items: Vec<(String, f32)> = Vec::new();
-        let mut i = 0;
-
-        while i + 2 < self.items.len() {
-            let group = &self.items[i..i + 3];
-            let prices: Vec<f32> = group.iter().map(|(_, p)| *p).collect();
-
-            let min_price = prices.iter().cloned().reduce(f32::min).unwrap();
-            let total: f32 = prices.iter().sum();
-            let new_total = total - min_price;
-            let factor = new_total / total;
-
-            for (name, price) in group {
-                let adjusted = (price * factor * 100.0).round() / 100.0;
-                discounted_items.push((name.clone(), adjusted));
+        // Extract only the prices from the items
+        let mut prices: Vec<f32> = self.items.iter().map(|(_, price)| *price).collect();
+        
+        // Sort prices in ascending order
+        prices.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        
+        // Calculate total original price
+        let total_original: f32 = prices.iter().sum();
+        
+        // Calculate price after discount (every third item free)
+        let mut total_after_discount = 0.0;
+        for (i, &price) in prices.iter().enumerate() {
+            if (i + 1) % 3 != 0 {
+                total_after_discount += price;
             }
-
-            i += 3;
         }
-
-        for j in i..self.items.len() {
-            let (name, price) = &self.items[j];
-            discounted_items.push((name.clone(), (*price * 100.0).round() / 100.0));
-        }
-
-        // Sort by product name (like the test expects)
-        discounted_items.sort_by(|a, b| a.0.cmp(&b.0));
-
-        let receipt: Vec<f32> = discounted_items.iter().map(|(_, p)| *p).collect();
+        
+        // Calculate discount ratio
+        let discount_ratio = if total_original > 0.0 {
+            total_after_discount / total_original
+        } else {
+            1.0
+        };
+        
+        // Apply discount proportionally to each item
+        let receipt: Vec<f32> = prices.iter()
+            .map(|&price| (price * discount_ratio * 100.0).round() / 100.0)
+            .collect();
+        
+        // Update the receipt field
         self.receipt = receipt.clone();
+        
         receipt
     }
 }
