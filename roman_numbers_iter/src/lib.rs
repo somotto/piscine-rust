@@ -1,4 +1,5 @@
-use std::iter::Iterator;
+mod roman_numbers;
+use roman_numbers::RomanNumber;
 
 impl Iterator for RomanNumber {
     type Item = RomanNumber;
