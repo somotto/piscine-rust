@@ -31,7 +31,8 @@ impl Collatz {
 
 pub fn collatz(n: u64) -> usize {
     if n == 0 {
-        return 0;
+        0
+    } else {
+        Collatz::new(n).take_while(|c| c.v != 1).count()
     }
-    Collatz::new(n).count() - 1
 }
