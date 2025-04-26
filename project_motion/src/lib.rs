@@ -29,23 +29,20 @@ impl Iterator for ThrowObject {
     type Item = ThrowObject;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let g = 9.8;
-
         self.time += 1.0;
-
-        let new_x = self.init_position.x + self.init_velocity.x * self.time;
-        let new_y = self.init_position.y + self.init_velocity.y * self.time - 0.5 * g * self.time * self.time;
-
-        let new_vx = self.init_velocity.x;
-        let new_vy = self.init_velocity.y - g * self.time;
-
-        if new_y <= 0.0 {
-            return None;
+        
+        const GRAVITY: f32 = 9.8; 
+        
+        self.actual_velocity.x = self.init_velocity.x;
+        self.actual_velocity.y = self.init_velocity.y - GRAVITY * self.time;
+        
+        self.actual_position.x = self.init_position.x + self.init_velocity.x * self.time;
+        self.actual_position.y = self.init_position.y + self.init_velocity.y * self.time - 0.5 * GRAVITY * self.time * self.time;
+        
+        if self.actual_position.y <= 0.0 {
+            None
+        } else {
+            Some(self.clone())
         }
-
-        self.actual_position = Object { x: new_x, y: new_y };
-        self.actual_velocity = Object { x: new_vx, y: new_vy };
-
-        Some(self.clone())
     }
 }
