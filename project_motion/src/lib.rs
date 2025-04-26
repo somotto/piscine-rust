@@ -34,10 +34,12 @@ impl Iterator for ThrowObject {
         const GRAVITY: f32 = 9.8; 
         
         self.actual_velocity.x = self.init_velocity.x;
-        self.actual_velocity.y = self.init_velocity.y - GRAVITY * self.time;
+        let new_y_velocity = self.init_velocity.y - GRAVITY * self.time;
+        self.actual_velocity.y = (new_y_velocity * 10.0).round() / 10.0;
         
         self.actual_position.x = self.init_position.x + self.init_velocity.x * self.time;
-        self.actual_position.y = self.init_position.y + self.init_velocity.y * self.time - 0.5 * GRAVITY * self.time * self.time;
+        let new_y_position = self.init_position.y + self.init_velocity.y * self.time - 0.5 * GRAVITY * self.time * self.time;
+        self.actual_position.y = (new_y_position * 10.0).round() / 10.0;
         
         if self.actual_position.y <= 0.0 {
             None
