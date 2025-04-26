@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 #[derive(Debug, Clone, PartialEq)]
 pub struct Store {
     pub products: Vec<(String, f32)>,
@@ -17,58 +18,73 @@ pub struct Cart {
 
 impl Cart {
     pub fn new() -> Cart {
-        Cart {
-            items: Vec::new(),
-            receipt: Vec::new(),
-        }
+        Cart { items: Vec::new(), receipt: Vec::new() }
     }
-
+    
     pub fn insert_item(&mut self, s: &Store, ele: String) {
-        // Find the product in the store
-        if let Some(product) = s.products.iter().find(|(name, _)| *name == ele) {
-            // Add the product to the cart
-            self.items.push((product.0.clone(), product.1));
+        for item in &s.products {
+            if item.0 == ele {
+                self.items.push((item.0.clone(), item.1));
+            }
         }
     }
-
+    
     pub fn generate_receipt(&mut self) -> Vec<f32> {
-        // Extract only the prices from the items
-        let mut prices: Vec<f32> = self.items.iter().map(|(_, price)| *price).collect();
+        let mut result: Vec<f32> = Vec::new();
         
-        // Sort prices in ascending order
-        prices.sort_by(|a, b| a.partial_cmp(b).unwrap());
+        let mut items_arr = self.items.clone();
         
-        // Calculate total cost before discount
-        let original_total: f32 = prices.iter().sum();
+        items_arr.sort_by(|a, b| cmp_f32(a.1, b.1));
         
-        // Calculate total discount (every third item free)
-        let free_items: Vec<f32> = prices.iter()
-            .enumerate()
-            .filter(|(i, _)| (i + 1) % 3 == 0)
-            .map(|(_, &price)| price)
-            .collect();
+        let sorted_items = items_arr.clone();
         
-        let discount_total: f32 = free_items.iter().sum();
+        let free_items = items_arr.len() / 3;
         
-        // Calculate discount percentage
-        let discount_percentage = if original_total > 0.0 {
-            discount_total / original_total
-        } else {
-            0.0
-        };
+        for ind in 0..free_items {
+            items_arr[ind].1 = 0.0;
+        }
         
-        // Apply discount to all items proportionally
-        let receipt: Vec<f32> = prices.iter()
-            .map(|&price| {
-                let discounted_price = price * (1.0 - discount_percentage);
-                // Round to 2 decimal places
-                (discounted_price * 100.0).round() / 100.0
-            })
-            .collect();
+        let new_coeff = calculate_coeff(items_arr, self.items.clone());
         
-        // Store the receipt
-        self.receipt = receipt.clone();
+        for item in sorted_items {
+            let new_price = item.1 * new_coeff;
+            result.push(round2d(new_price));
+        }
         
-        receipt
+        self.receipt = result.clone();
+        
+        result
     }
+}
+
+pub fn round2d(num: f32) -> f32 {
+    return (num * 100.0).round() / 100.0;
+}
+
+pub fn calculate_coeff(new_items: Vec<(String, f32)>, old_items: Vec<(String, f32)>) -> f32 {
+    let mut new_summ = 0.0;
+    let mut old_summ = 0.0;
+    
+    for item in new_items {
+        new_summ += item.1;
+    }
+    
+    for item in old_items {
+        old_summ += item.1;
+    }
+    
+    if old_summ == 0.0 {
+        return 1.0;
+    }
+    
+    return new_summ / old_summ;
+}
+
+pub fn cmp_f32(first: f32, second: f32) -> Ordering {
+    if first > second {
+        return Ordering::Greater;
+    } else if first < second {
+        return Ordering::Less;
+    }
+    return Ordering::Equal;
 }
