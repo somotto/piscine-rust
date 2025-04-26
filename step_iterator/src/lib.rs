@@ -5,11 +5,13 @@ pub struct StepIterator<T> {
     done: bool,
 }
 
-use std::ops::{Add, PartialOrd, Copy};
+use std::ops::Add;
+use std::cmp::PartialOrd;
+use std::marker::Copy;
 
 impl<T> StepIterator<T> 
 where
-    T: Add<Output = T> + PartialOrd + Copy,
+    T: Add<Output = T> + PartialOrd + Copy + Zero,
 {
     pub fn new(beg: T, end: T, step: T) -> Self {
         StepIterator {
@@ -23,7 +25,7 @@ where
 
 impl<T> Iterator for StepIterator<T> 
 where
-    T: Add<Output = T> + PartialOrd + Copy,
+    T: Add<Output = T> + PartialOrd + Copy + Zero,
 {
     type Item = T;
 
@@ -35,10 +37,7 @@ where
         let result = self.current;
 
         self.current = self.current + self.step;
-        if (self.step > T::zero() && result > self.end) || (self.step < T::zero() && result < self.end) {
-            self.done = true;
-            return None;
-        }
+        
         if (self.step > T::zero() && self.current > self.end) || (self.step < T::zero() && self.current < self.end) {
             self.done = true;
         }
@@ -63,8 +62,3 @@ impl Zero for u64 { fn zero() -> Self { 0 } }
 impl Zero for usize { fn zero() -> Self { 0 } }
 impl Zero for f32 { fn zero() -> Self { 0.0 } }
 impl Zero for f64 { fn zero() -> Self { 0.0 } }
-
-impl<T> StepIterator<T> 
-where
-    T: Add<Output = T> + PartialOrd + Copy + Zero,
-{}
