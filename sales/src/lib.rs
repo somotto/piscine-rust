@@ -38,30 +38,35 @@ impl Cart {
         // Sort prices in ascending order
         prices.sort_by(|a, b| a.partial_cmp(b).unwrap());
         
-        // Calculate total original price
-        let total_original: f32 = prices.iter().sum();
+        // Calculate total cost before discount
+        let original_total: f32 = prices.iter().sum();
         
-        // Calculate price after discount (every third item free)
-        let mut total_after_discount = 0.0;
-        for (i, &price) in prices.iter().enumerate() {
-            if (i + 1) % 3 != 0 {
-                total_after_discount += price;
-            }
-        }
-        
-        // Calculate discount ratio
-        let discount_ratio = if total_original > 0.0 {
-            total_after_discount / total_original
-        } else {
-            1.0
-        };
-        
-        // Apply discount proportionally to each item
-        let receipt: Vec<f32> = prices.iter()
-            .map(|&price| (price * discount_ratio * 100.0).round() / 100.0)
+        // Calculate total discount (every third item free)
+        let free_items: Vec<f32> = prices.iter()
+            .enumerate()
+            .filter(|(i, _)| (i + 1) % 3 == 0)
+            .map(|(_, &price)| price)
             .collect();
         
-        // Update the receipt field
+        let discount_total: f32 = free_items.iter().sum();
+        
+        // Calculate discount percentage
+        let discount_percentage = if original_total > 0.0 {
+            discount_total / original_total
+        } else {
+            0.0
+        };
+        
+        // Apply discount to all items proportionally
+        let receipt: Vec<f32> = prices.iter()
+            .map(|&price| {
+                let discounted_price = price * (1.0 - discount_percentage);
+                // Round to 2 decimal places
+                (discounted_price * 100.0).round() / 100.0
+            })
+            .collect();
+        
+        // Store the receipt
         self.receipt = receipt.clone();
         
         receipt
